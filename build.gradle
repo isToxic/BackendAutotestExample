@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+apply from: 'gradle/dependencies.gradle'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+group 'ru.msb'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+def profile = 'first'
+task cucumber() {
+    dependsOn assemble
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            environment 'spring.profiles.active', profile
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--glue', 'ru.msb', 'src\\main\\resources\\features',
+//                    '--tags', '',
+                    '--threads', '6'
+            ]
+        }
+    }
+}
+
+dependencies {
+    testAnnotationProcessor libs.lombok
+    annotationProcessor libs.lombok
+
+    compile libs.cucumber
+    compile libs.common
+    compile libs.lombok
+    compile libs.jackson
+    compile libs.logging
+    compile libs.spring
+    compile libs.tests
+}

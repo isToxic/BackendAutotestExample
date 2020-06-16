@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/CucumberRunner.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/common/kafka/KafkaConfig.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/common/models/KafkaInfo.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/common/models/SSLStoreInfo.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/common/service/KafkaService.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/common/setting/YamlProppertySourceFactory.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/msb/stepdefs/Test.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/features/tread.feature" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
