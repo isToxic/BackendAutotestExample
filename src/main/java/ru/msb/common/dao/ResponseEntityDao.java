@@ -16,6 +16,6 @@ public interface ResponseEntityDao {
 
     Collection<ResponseEntity<String>> getAllResponseEntities();
 
-    Tuple save(ResponseEntity<String> responseEntity, String requestName);
+    void save(ResponseEntity<String> responseEntity, String requestName);
 
 }

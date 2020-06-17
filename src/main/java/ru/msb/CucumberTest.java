@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features ="src\\main\\resources\\features",
         extraGlue = "ru.msb",
-        plugin = "pretty"
-)
+        plugin = "pretty")
 public class CucumberTest {
 }

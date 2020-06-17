@@ -1,6 +1,5 @@
 package ru.msb.common.service;
 
-import io.vavr.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
@@ -10,6 +9,8 @@ import org.springframework.util.MultiValueMap;
 import ru.msb.common.dao.ResponseEntityDao;
 import ru.msb.common.http.RestTemplateGenerator;
 import ru.msb.common.models.RestRequestInfo;
+
+import java.util.List;
 
 import static ru.msb.common.Common.genURI;
 
@@ -26,9 +27,9 @@ public class HttpRestService {
         this.dao = dao;
     }
 
-    public Tuple doPATCH(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
+    public void doPATCH(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .patch(genURI(
                                                 info.getHost(),
@@ -45,9 +46,9 @@ public class HttpRestService {
                 requestName);
     }
 
-    public Tuple doPOST(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
+    public void doPOST(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .post(genURI(
                                                 info.getHost(),
@@ -64,9 +65,9 @@ public class HttpRestService {
                 requestName);
     }
 
-    public Tuple doPUT(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
+    public void doPUT(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .put(genURI(
                                                 info.getHost(),
@@ -83,9 +84,9 @@ public class HttpRestService {
                 requestName);
     }
 
-    public Tuple doDELETE(String requestName, @Nullable MultiValueMap<String, String> headers) {
+    public void doDELETE(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .delete(genURI(
                                                 info.getHost(),
@@ -102,9 +103,9 @@ public class HttpRestService {
                 requestName);
     }
 
-    public Tuple doGET(String requestName, @Nullable MultiValueMap<String, String> headers) {
+    public void doGET(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .get(genURI(
                                                 info.getHost(),
@@ -121,9 +122,9 @@ public class HttpRestService {
                 requestName);
     }
 
-    public Tuple doHEAD(String requestName, @Nullable MultiValueMap<String, String> headers) {
+    public void doHEAD(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .head(genURI(
                                                 info.getHost(),
@@ -140,9 +141,9 @@ public class HttpRestService {
                 requestName);
     }
 
-    public Tuple doOPTIONS(String requestName, @Nullable MultiValueMap<String, String> headers) {
+    public void doOPTIONS(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        return dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .options(genURI(
                                                 info.getHost(),

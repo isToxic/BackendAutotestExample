@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestRequestInfo {
     private String host;
-    private Integer port;
+    private String port;
     private String mapping;
     private String sslStore;
     private String trustStrategy;

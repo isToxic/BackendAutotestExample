@@ -48,7 +48,7 @@ public class RestTemplateGenerator {
         RestRequestInfo info = settings.getRest().get(requestName);
         Map<String, SSLStoreInfo> sslStores = settings.getSslStores();
         switch (UsedTrustStrategy.valueOf(info.getTrustStrategy())) {
-            case NO:
+            case NOT_USED:
                 log.debug("Начата конфигурация клиента для выполнения рест запросов без использования SSL");
                 return getNoSSL();
             case ACCEPT_ALL:

@@ -4,8 +4,13 @@ import io.vavr.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.net.URI;
+import java.util.Optional;
+
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class Common {
@@ -41,7 +46,12 @@ public class Common {
         return key;
     }
 
-    public static URI genURI(String host, String mapping, int port) {
-        return URI.create(String.format("%s/%s:%s", host, mapping, port));
+    public static URI genURI(String host, @Nullable String mapping,@Nullable String port) {
+        return URI.create(format(
+                "%s/%s:%s",
+                host,
+                ofNullable(mapping).orElse(""),
+                ofNullable(port).orElse(""))
+        );
     }
 }

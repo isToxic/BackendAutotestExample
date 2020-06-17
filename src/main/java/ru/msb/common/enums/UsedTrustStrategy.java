@@ -1,7 +1,7 @@
 package ru.msb.common.enums;
 
 public enum UsedTrustStrategy {
-    NO,
+    NOT_USED,
     ACCEPT_ALL,
     TRUST_SELF_SIGNED
 }

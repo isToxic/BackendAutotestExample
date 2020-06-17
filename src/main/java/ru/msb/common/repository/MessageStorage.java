@@ -9,6 +9,7 @@ import ru.msb.common.dao.ResponseEntityDao;
 import ru.msb.common.dao.StringContentDao;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static ru.msb.common.Common.*;
 
@@ -17,7 +18,8 @@ public class MessageStorage implements
         ConsumerRecordsDao, ResponseEntityDao, StringContentDao {
     @Override
     public ConsumerRecord<byte[], byte[]> getConsumerRecord(Tuple key) {
-        return CONSUMER_RECORD_CONCURRENT_MAP.get(key);
+        return Optional.of(CONSUMER_RECORD_CONCURRENT_MAP.get(key))
+                .orElseThrow();
     }
 
     @Override
@@ -34,7 +36,8 @@ public class MessageStorage implements
 
     @Override
     public ResponseEntity<String> getResponseEntity(Tuple key) {
-        return RESPONSE_ENTITY_CONCURRENT_MAP.get(key);
+        return Optional.of(RESPONSE_ENTITY_CONCURRENT_MAP.get(key))
+                .orElseThrow();
     }
 
     @Override
@@ -43,15 +46,17 @@ public class MessageStorage implements
     }
 
     @Override
-    public Tuple save(ResponseEntity<String> responseEntity, String requestName) {
-        Tuple key = generateResponseEntityKey(requestName);
-        RESPONSE_ENTITY_CONCURRENT_MAP.put(key, responseEntity);
-        return key;
+    public void save(ResponseEntity<String> responseEntity, String requestName) {
+        RESPONSE_ENTITY_CONCURRENT_MAP.put(
+                generateResponseEntityKey(requestName),
+                responseEntity
+        );
     }
 
     @Override
     public String getString(Tuple name) {
-        return STRING_CONCURRENT_MAP.get(name);
+        return Optional.of(STRING_CONCURRENT_MAP.get(name))
+                .orElseThrow();
     }
 
     @Override
