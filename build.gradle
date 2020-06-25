@@ -30,7 +30,7 @@ task cucumber() {
                     '--plugin', 'pretty',
                     '--glue', 'ru.msb', 'src\\main\\resources\\features',
 //                    '--tags', '',
-                    '--threads', '16'
+                    '--threads', '8'
             ]
         }
     }

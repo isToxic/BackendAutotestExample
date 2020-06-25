@@ -3,6 +3,7 @@ package ru.msb.common.repository;
 import io.vavr.Tuple;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import ru.msb.common.dao.ConsumerRecordsDao;
 import ru.msb.common.dao.ResponseEntityDao;
@@ -28,10 +29,11 @@ public class MessageStorage implements
     }
 
     @Override
-    public Tuple save(ConsumerRecord<byte[], byte[]> consumerRecord) {
-        Tuple key = generateConsumerRecordKey(consumerRecord);
-        CONSUMER_RECORD_CONCURRENT_MAP.put(key, consumerRecord);
-        return key;
+    public void save(ConsumerRecord<byte[], byte[]> consumerRecord,@Nullable String mainThreadName) {
+        CONSUMER_RECORD_CONCURRENT_MAP.put(
+                generateConsumerRecordKey(consumerRecord.topic(), mainThreadName),
+                consumerRecord
+        );
     }
 
     @Override

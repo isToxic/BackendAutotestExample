@@ -1,26 +1,22 @@
 project:
   kafka:
     broker1:
-      host: 127.0.0.1:9090
+      host: 192.168.1.3:9092
       groupId: myGroup
     broker2:
-      host: 127.0.0.1:9092
+      host: 192.168.1.3:9093
       groupId: myGroup2
       sslStores:
         - user3
-        - user4
   rest:
-    request1:
-      host: http://google.com/
-      port: 8080
-      mapping: index
-      sslStore: user1
-      trustStrategy: TRUST_SELF_SIGNED
+    eurookna:
+      host: https://www.eurookna.ru/
+      trustStrategy: NOT_USED
     request2:
       host: http://google.com/
       port: 8080
       mapping: index
-      trustStrategy:  NO
+      trustStrategy:  NOT_USED
   sslStores:
     user1:
       keystoreLocation: userStores//key1.jks
@@ -28,10 +24,10 @@ project:
     user2:
       truststoreType: JKS
       keystoreType: JKS
-      truststoreLocation: userStores//trust2.jks
-      keystoreLocation: userStores//key2.jks
-      truststorePassword: pass1234
-      keystorePassword: pass1234
+      truststoreLocation: resources\userStores\client.truststore.jks
+      keystoreLocation: resources\userStores\server.truststore.jks
+      truststorePassword: key1234
+      keystorePassword: key1234
     user3:
       truststoreType: JKS
       keystoreType: JKS

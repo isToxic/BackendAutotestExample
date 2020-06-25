@@ -16,7 +16,7 @@
         },
         "color": {
           "type": "string",
-          "enum": ["GREEN", "BLUE"]
+          "enum": ["BLACK"]
         }
       },
       "required": [

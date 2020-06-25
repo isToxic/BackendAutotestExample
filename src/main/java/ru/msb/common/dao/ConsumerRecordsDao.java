@@ -3,6 +3,7 @@ package ru.msb.common.dao;
 
 import io.vavr.Tuple;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -17,6 +18,6 @@ public interface ConsumerRecordsDao {
 
     Collection<ConsumerRecord<byte[], byte[]>> getAllConsumerRecords();
 
-    Tuple save(ConsumerRecord<byte[], byte[]> consumerRecord);
+    void save(ConsumerRecord<byte[], byte[]> consumerRecord,@Nullable String mainThreadName);
 
 }

@@ -35,13 +35,14 @@ ext {
             cucumber_spring     : "io.cucumber:cucumber-spring:$cucumberVer",
             cucumber_junit        : "io.cucumber:cucumber-junit:$cucumberVer",
             vavr                          : "io.vavr:vavr:$vavrVer",
-            javax                        : "javax.annotation:javax.annotation-api:$javaxVer",
-            httpClient                 :  "org.apache.httpcomponents:httpclient:$httpClientVer"
+            javax                        :  "javax.annotation:javax.annotation-api:$javaxVer",
+            httpClient                 :  "org.apache.httpcomponents:httpclient:$httpClientVer",
+            commons_lang3      :  "org.apache.commons:commons-lang3:3.10"
     ]
 
     libs.spring = [libs.springKafka, libs.snakeYaml, libs.web_starter]
     libs.cucumber = [libs.cucumber_java8, libs.cucumber_spring, libs.cucumber_junit]
-    libs.common = [libs.vavr, libs.javax, libs.httpClient]
+    libs.common = [libs.vavr, libs.javax, libs.httpClient, libs.commons_lang3]
     libs.jackson = [libs.jackson_annotations, libs.jackson_databind, libs.jackson_Schema, libs.json_schema_valid, libs.jsonGenerator]
     libs.tests = [libs.junit, libs.springBootTest, libs.springTest]
     libs.logging = [libs.slf4jApi, libs.logbackClassic, libs.jclOverSlf4j, libs.julToSlf4j]
