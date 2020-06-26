@@ -12,8 +12,8 @@ import org.springframework.lang.Nullable;
 @Builder
 public class KafkaStorage {
     private Tuple name;
-    private KafkaTemplate<byte[], byte[]> kafkaTemplate;
-    private DefaultKafkaConsumerFactory<byte[], byte[]> consumerFactory;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private DefaultKafkaConsumerFactory<String, String> consumerFactory;
 
     public static Tuple genKafkaStorageName(@NonNull String brokerName, @Nullable String sslName) {
         return sslName == null ? Tuple.of(brokerName) : Tuple.of(brokerName, sslName);

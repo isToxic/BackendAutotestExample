@@ -12,12 +12,12 @@ import java.util.concurrent.ConcurrentMap;
 
 @Repository
 public interface ConsumerRecordsDao {
-    ConcurrentMap<Tuple, ConsumerRecord<byte[], byte[]>> CONSUMER_RECORD_CONCURRENT_MAP = new ConcurrentHashMap<>();
+    ConcurrentMap<Tuple, ConsumerRecord<String, String>> CONSUMER_RECORD_CONCURRENT_MAP = new ConcurrentHashMap<>();
 
-    ConsumerRecord<byte[], byte[]> getConsumerRecord(Tuple key);
+    ConsumerRecord<String, String> getConsumerRecord(Tuple key);
 
-    Collection<ConsumerRecord<byte[], byte[]>> getAllConsumerRecords();
+    Collection<ConsumerRecord<String, String>> getAllConsumerRecords();
 
-    void save(ConsumerRecord<byte[], byte[]> consumerRecord,@Nullable String mainThreadName);
+    void save(ConsumerRecord<String, String> consumerRecord,@Nullable String mainThreadName);
 
 }

@@ -1,44 +1,47 @@
 project:
   kafka:
     broker1:
-      host: 192.168.1.3:9092
-      groupId: myGroup
+      host: 192.168.1.5:9092
+      group-id: myGroup
+      auto-commit-interval: 50
+      max-poll-interval: 500
+      max-poll-records: 5
     broker2:
       host: 192.168.1.3:9093
-      groupId: myGroup2
-      sslStores:
+      group-id: myGroup2
+      ssl-stores:
         - user3
   rest:
     eurookna:
-      host: https://www.eurookna.ru/
-      trustStrategy: NOT_USED
+      host: https://www.eurookna.ru
+      trust-strategy: NOT_USED
     request2:
-      host: http://google.com/
+      host: http://google.com
       port: 8080
       mapping: index
-      trustStrategy:  NOT_USED
+      trust-strategy:  NOT_USED
   sslStores:
     user1:
-      keystoreLocation: userStores//key1.jks
-      keystorePassword: pass1234
+      keystore-location: userStores//key1.jks
+      keystore-password: pass1234
     user2:
-      truststoreType: JKS
-      keystoreType: JKS
-      truststoreLocation: resources\userStores\client.truststore.jks
-      keystoreLocation: resources\userStores\server.truststore.jks
-      truststorePassword: key1234
-      keystorePassword: key1234
+      truststore-type: JKS
+      keystore-type: JKS
+      truststore-location: resources\userStores\client.truststore.jks
+      keystore-location: resources\userStores\server.truststore.jks
+      truststore-password: key1234
+      keystore-password: key1234
     user3:
-      truststoreType: JKS
-      keystoreType: JKS
-      truststoreLocation: userStores//trust3.jks
-      keystoreLocation: userStores//key3.jks
-      truststorePassword: pass1234
-      keystorePassword: pass1234
+      truststore-type: JKS
+      keystore-type: JKS
+      truststore-location: userStores//trust3.jks
+      keystore-location: userStores//key3.jks
+      truststore-password: pass1234
+      keystore-password: pass1234
     user4:
-      truststoreType: JKS
-      keystoreType: JKS
-      truststoreLocation: userStores//trust4.jks
-      keystoreLocation: userStores//key4.jks
-      truststorePassword: pass1234
-      keystorePassword: pass1234
+      truststore-type: JKS
+      keystore-type: JKS
+      truststore-location: userStores//trust4.jks
+      keystore-location: userStores//key4.jks
+      truststore-password: pass1234
+      keystore-password: pass1234

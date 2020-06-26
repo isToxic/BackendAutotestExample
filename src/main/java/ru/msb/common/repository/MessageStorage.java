@@ -18,18 +18,18 @@ import static ru.msb.common.Common.*;
 public class MessageStorage implements
         ConsumerRecordsDao, ResponseEntityDao, StringContentDao {
     @Override
-    public ConsumerRecord<byte[], byte[]> getConsumerRecord(Tuple key) {
+    public ConsumerRecord<String, String> getConsumerRecord(Tuple key) {
         return Optional.of(CONSUMER_RECORD_CONCURRENT_MAP.get(key))
                 .orElseThrow();
     }
 
     @Override
-    public Collection<ConsumerRecord<byte[], byte[]>> getAllConsumerRecords() {
+    public Collection<ConsumerRecord<String, String>> getAllConsumerRecords() {
         return CONSUMER_RECORD_CONCURRENT_MAP.values();
     }
 
     @Override
-    public void save(ConsumerRecord<byte[], byte[]> consumerRecord,@Nullable String mainThreadName) {
+    public void save(ConsumerRecord<String, String> consumerRecord,@Nullable String mainThreadName) {
         CONSUMER_RECORD_CONCURRENT_MAP.put(
                 generateConsumerRecordKey(consumerRecord.topic(), mainThreadName),
                 consumerRecord

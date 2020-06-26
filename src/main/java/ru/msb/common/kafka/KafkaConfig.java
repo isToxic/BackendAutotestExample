@@ -1,9 +1,10 @@
 package ru.msb.common.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,11 +70,11 @@ public class KafkaConfig {
                 );
     }
 
-    private KafkaTemplate<byte[], byte[]> getKafkaTemplate(@NonNull KafkaInfo setting, @Nullable String sslStorename) {
+    private KafkaTemplate<String, String> getKafkaTemplate(@NonNull KafkaInfo setting, @Nullable String sslStorename) {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(getConfigs(setting, prop.getSslStores().get(sslStorename))));
     }
 
-    private DefaultKafkaConsumerFactory<byte[], byte[]> getConsumerFactory(@NonNull KafkaInfo setting, @Nullable String sslStorename){
+    private DefaultKafkaConsumerFactory<String, String> getConsumerFactory(@NonNull KafkaInfo setting, @Nullable String sslStorename){
         return new DefaultKafkaConsumerFactory<>(getConfigs(setting, prop.getSslStores().get(sslStorename)));
     }
 
@@ -81,13 +82,13 @@ public class KafkaConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(BOOTSTRAP_SERVERS_CONFIG, setting.getHost());
         configProps.put(GROUP_ID_CONFIG, setting.getGroupId());
-        configProps.put(AUTO_COMMIT_INTERVAL_MS_CONFIG, 200);
-        configProps.put(MAX_POLL_INTERVAL_MS_CONFIG, 200);
-        configProps.put(MAX_POLL_RECORDS_CONFIG, 1);
-        configProps.put(KEY_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
-        configProps.put(VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
-        configProps.put(KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
-        configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+        configProps.put(AUTO_COMMIT_INTERVAL_MS_CONFIG, setting.getAutoCommitInterval());
+        configProps.put(MAX_POLL_INTERVAL_MS_CONFIG, setting.getMaxPollInterval());
+        configProps.put(MAX_POLL_RECORDS_CONFIG, setting.getMaxPollRecords());
+        configProps.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         if (sslStoreInfo != null) {
             configProps.put(SSL_PROTOCOL_CONFIG, "SSL");
             configProps.put(SSL_TRUSTSTORE_TYPE_CONFIG, sslStoreInfo.getTruststoreType());
