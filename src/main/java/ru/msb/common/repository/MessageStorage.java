@@ -19,8 +19,16 @@ public class MessageStorage implements
         ConsumerRecordsDao, ResponseEntityDao, StringContentDao {
     @Override
     public ConsumerRecord<String, String> getConsumerRecord(Tuple key) {
-        return Optional.of(CONSUMER_RECORD_CONCURRENT_MAP.get(key))
-                .orElseThrow();
+        return Optional.ofNullable(
+                CONSUMER_RECORD_CONCURRENT_MAP.getOrDefault(key, null))
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format(
+                                        "No ConsumerRecord with name: %s",
+                                        key.toString()
+                                )
+                        )
+                );
     }
 
     @Override
@@ -29,7 +37,7 @@ public class MessageStorage implements
     }
 
     @Override
-    public void save(ConsumerRecord<String, String> consumerRecord,@Nullable String mainThreadName) {
+    public void save(ConsumerRecord<String, String> consumerRecord, @Nullable String mainThreadName) {
         CONSUMER_RECORD_CONCURRENT_MAP.put(
                 generateConsumerRecordKey(consumerRecord.topic(), mainThreadName),
                 consumerRecord
@@ -38,8 +46,16 @@ public class MessageStorage implements
 
     @Override
     public ResponseEntity<String> getResponseEntity(Tuple key) {
-        return Optional.of(RESPONSE_ENTITY_CONCURRENT_MAP.get(key))
-                .orElseThrow();
+        return Optional.ofNullable(
+                RESPONSE_ENTITY_CONCURRENT_MAP.getOrDefault(key, null))
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format(
+                                        "No ResponseEntity with name: %s",
+                                        key.toString()
+                                )
+                        )
+                );
     }
 
     @Override
@@ -57,8 +73,16 @@ public class MessageStorage implements
 
     @Override
     public String getString(Tuple name) {
-        return Optional.of(STRING_CONCURRENT_MAP.get(name))
-                .orElseThrow();
+        return Optional.ofNullable(
+                STRING_CONCURRENT_MAP.getOrDefault(name, null))
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format(
+                                        "No String with name: %s",
+                                        name.toString()
+                                )
+                        )
+                );
     }
 
     @Override
