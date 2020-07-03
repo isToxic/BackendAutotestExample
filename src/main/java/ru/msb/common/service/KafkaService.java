@@ -46,7 +46,7 @@ public class KafkaService  implements ConsumerSeekAware {
             @NonNull Tuple storageName,
             @NonNull String topic,
             RecordFilterStrategy<String, String> filterStrategy) {
-        listen(storageName, topic, filterStrategy, 3000L);
+        listen(storageName, topic, filterStrategy, 30000L);
     }
 
     public void listen(

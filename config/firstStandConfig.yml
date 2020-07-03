@@ -13,7 +13,7 @@ project:
         - user3
   rest:
     eurookna:
-      host: https://www.eurookna.ru
+      host: http://www.google.com
       trust-strategy: NOT_USED
     request2:
       host: http://google.com

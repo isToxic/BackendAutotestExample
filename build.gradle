@@ -1,8 +1,7 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.8.1'
 }
-
-apply from: 'gradle/dependencies.gradle'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -10,30 +9,10 @@ compileTestJava.options.encoding = "UTF-8"
 group 'ru.msb'
 version '1.0-SNAPSHOT'
 
+apply from: 'gradle/dependencies.gradle'
+
 repositories {
     mavenCentral()
-}
-configurations {
-    cucumberRuntime {
-        extendsFrom testImplementation
-    }
-}
-def profile = 'first'
-task cucumber() {
-    dependsOn assemble
-    doLast {
-        javaexec {
-            main = "io.cucumber.core.cli.Main"
-            environment 'spring.profiles.active', profile
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = [
-                    '--plugin', 'pretty',
-                    '--glue', 'ru.msb', 'src\\main\\resources\\features',
-//                    '--tags', '',
-                    '--threads', '8'
-            ]
-        }
-    }
 }
 
 dependencies {
@@ -48,3 +27,47 @@ dependencies {
     compile libs.spring
     compile libs.tests
 }
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+def profile = 'first'
+
+task cucumber() {
+    dependsOn assemble
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            environment 'spring.profiles.active', profile
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'io.qameta.allure.cucumber5jvm.AllureCucumber5Jvm',
+                    '--glue', 'ru.msb', 'src\\main\\resources\\features',
+                    '--strict',
+//                    '--tags', '',
+                    '--threads', '8'
+            ]
+        }
+    }
+}
+
+allure {
+    autoconfigure = true
+    aspectjweaver = true
+    version = '2.13.3'
+    resultsDir = file(project.projectDir.toString() +'\\allure-results')
+    useCucumberJVM {
+        version = '2.13.3'
+    }
+}
+
+
+
