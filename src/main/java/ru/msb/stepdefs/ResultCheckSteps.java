@@ -4,6 +4,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.Ru;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.msb.common.dao.ByteArrayContentDao;
 import ru.msb.common.dao.ConsumerRecordsDao;
 import ru.msb.common.dao.ResponseEntityDao;
 import ru.msb.common.service.JsonProcessingService;
@@ -13,8 +14,7 @@ import java.util.List;
 import static java.lang.String.valueOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static ru.msb.common.Common.generateConsumerRecordKey;
-import static ru.msb.common.Common.generateResponseEntityKey;
+import static ru.msb.common.Common.*;
 
 @Slf4j
 public class ResultCheckSteps implements Ru {
@@ -28,9 +28,12 @@ public class ResultCheckSteps implements Ru {
     @Autowired
     private ConsumerRecordsDao consumerRecordsDao;
 
+    @Autowired
+    private ByteArrayContentDao byteArrayContentDao;
+
     @SuppressWarnings(value = "unchecked")
     public ResultCheckSteps() {
-        Допустим("проверяю, что ответ на запрос {string} соответствует {string} схеме", (String requestName, String fileName) ->
+        Допустим("проверяю, что ответ на REST запрос {string} соответствует {string} схеме", (String requestName, String fileName) ->
                 assertTrue(service.validateIt(
                         service.readSchema(fileName),
                         service.toJson(
@@ -38,16 +41,16 @@ public class ResultCheckSteps implements Ru {
                                         .getBody())
                 ))
         );
-        Допустим("проверяю, что ответ на запрос {string} получен со статус кодом {int}", (String requestName, String statusCode) ->
+        Допустим("проверяю, что ответ на REST запрос {string} получен со статус кодом {int}", (String requestName, String statusCode) ->
                 assertEquals(
                         valueOf(responseEntityDao.getResponseEntity(generateResponseEntityKey(requestName)).getStatusCodeValue()),
                         statusCode
                 )
         );
-        Допустим("проверяю, что ответ на запрос {string} получен с успешным статус кодом", (String requestName, String statusCode) ->
+        Допустим("проверяю, что ответ на REST запрос {string} получен с успешным статус кодом", (String requestName, String statusCode) ->
                 assertTrue(responseEntityDao.getResponseEntity(generateResponseEntityKey(requestName)).getStatusCode().is2xxSuccessful())
         );
-        Допустим("проверяю, что ответ на запрос {string} содержит заголовки:", (String requestName, DataTable headers) ->
+        Допустим("проверяю, что ответ на REST запрос {string} содержит заголовки:", (String requestName, DataTable headers) ->
                 headers.asMap(String.class, List.class).forEach((headerName, headerValue) ->
                         assertTrue(
                                 responseEntityDao.getResponseEntity(generateResponseEntityKey(requestName))
@@ -64,6 +67,14 @@ public class ResultCheckSteps implements Ru {
                                                 generateConsumerRecordKey(topic, Thread.currentThread().getName()))
                                                 .value()
                                 )))
+        );
+        Допустим("проверяю, что ответ на ws запрос {string} соответствует {string} схеме", (String requestName, String fileName) ->
+                assertTrue(service.validateIt(
+                        service.readSchema(fileName),
+                        service.toJson(new String(
+                                byteArrayContentDao.getByteArray(generateByteArrayKey(requestName, Thread.currentThread().getName())))
+                        )
+                ))
         );
     }
 }

@@ -15,6 +15,7 @@ public class Common {
 
     public static final String KAFKA_STRING_REQUEST_MESSAGE = "KAFKA_STRING_REQUEST_MESSAGE";
     public static final String REST_STRING_REQUEST_MESSAGE = "REST_STRING_REQUEST_MESSAGE";
+    public static final String WS_STRING_REQUEST_MESSAGE = "WS_STRING_REQUEST_MESSAGE";
 
     public static Tuple generateConsumerRecordKey(@NonNull String topic, @Nullable String mainThreadName) {
         Tuple key = Tuple.of(
@@ -30,7 +31,7 @@ public class Common {
                 requestName,
                 Thread.currentThread().getName()
         );
-        log.debug("Сгенерирован ключ для хранения ResponseEntity: {}",  key.toSeq().toString());
+        log.debug("Сгенерирован ключ для хранения ResponseEntity: {}", key.toSeq().toString());
         return key;
     }
 

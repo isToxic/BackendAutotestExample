@@ -33,5 +33,13 @@ public class MessageGenerationSteps implements Ru {
                         )
                 )
         );
+        Допустим("генерирую сообщение по схеме {string} для запроса ws",
+                (String fileName) -> storage.save(Common.WS_STRING_REQUEST_MESSAGE,
+                        service.generateJsonFromSchema(
+                                service.toString(
+                                        service.readSchema(fileName))
+                        )
+                )
+        );
     }
 }
