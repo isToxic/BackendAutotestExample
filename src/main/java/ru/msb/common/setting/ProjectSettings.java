@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import ru.msb.common.models.KafkaInfo;
 import ru.msb.common.models.RestRequestInfo;
 import ru.msb.common.models.SSLStoreInfo;
+import ru.msb.common.models.WebSocketClientInfo;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,7 +20,8 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "project")
 public class ProjectSettings {
     private Map<String, KafkaInfo> kafka = new LinkedHashMap<>();
-    private Map<String, RestRequestInfo> rest = new  LinkedHashMap<>();
-    private Map<String, SSLStoreInfo> sslStores = new  LinkedHashMap<>();
+    private Map<String, RestRequestInfo> rest = new LinkedHashMap<>();
+    private Map<String, WebSocketClientInfo> wss = new LinkedHashMap<>();
+    private Map<String, SSLStoreInfo> sslStores = new LinkedHashMap<>();
 
 }

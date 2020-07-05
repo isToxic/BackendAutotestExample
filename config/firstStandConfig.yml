@@ -20,6 +20,11 @@ project:
       port: 8080
       mapping: index
       trust-strategy:  NOT_USED
+  wss:
+    test:
+      url: ws://echo.websocket.org
+      mapping: /echo
+      wss: false
   sslStores:
     user1:
       keystore-location: userStores//key1.jks

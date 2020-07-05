@@ -2,6 +2,7 @@ package ru.msb.common.http;
 
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.HttpClient;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
@@ -112,40 +113,55 @@ public class RestTemplateGenerator {
             @Nullable String trustStorePassword,
             @Nullable TrustStrategy trustStrategy) {
         return new RestTemplate(
-                new HttpComponentsClientHttpRequestFactory(HttpClients.custom()
-                        .setSSLSocketFactory(new SSLConnectionSocketFactory(
-                                trustStoreLocation != null && trustStorePassword != null && trustStrategy != null ?
-                                        Try.of(() -> new SSLContextBuilder()
-                                                .loadTrustMaterial(
-                                                        new File(trustStoreLocation),
-                                                        trustStorePassword.toCharArray(),
-                                                        trustStrategy)
-                                                .loadKeyMaterial(Try.of(() ->
-                                                                KeyStore.getInstance(KeyStore.getDefaultType()))
-                                                                .andThenTry(keyStore -> keyStore.load(
-                                                                        Try.of(() ->
-                                                                                new FileInputStream(
-                                                                                        new File(keyStoreLocation))
-                                                                        ).get(),
-                                                                        keyStorePassword.toCharArray())
-                                                                ).get(),
-                                                        keyStorePassword.toCharArray()).build()
-                                        ).get()
-                                        :
-                                        Try.of(() -> new SSLContextBuilder()
-                                                .loadTrustMaterial(null, new TrustSelfSignedStrategy())
-                                                .loadKeyMaterial(
-                                                        Try.of(() ->
-                                                                KeyStore.getInstance(KeyStore.getDefaultType()))
-                                                                .andThenTry(keyStore -> keyStore.load(
-                                                                        Try.of(() -> new FileInputStream(
-                                                                                new File(keyStoreLocation))
-                                                                        ).get(),
-                                                                        keyStorePassword.toCharArray())
-                                                                ).get(),
-                                                        keyStorePassword.toCharArray()).build()
-                                        ).get(),
-                                NoopHostnameVerifier.INSTANCE)).build())
+                new HttpComponentsClientHttpRequestFactory(
+                        getSSLHttClient(
+                                keyStoreLocation,
+                                keyStorePassword,
+                                trustStoreLocation,
+                                trustStorePassword,
+                                trustStrategy))
         );
+    }
+
+    private HttpClient getSSLHttClient(
+            @NonNull String keyStoreLocation,
+            @NonNull String keyStorePassword,
+            @Nullable String trustStoreLocation,
+            @Nullable String trustStorePassword,
+            @Nullable TrustStrategy trustStrategy) {
+        return HttpClients.custom()
+                .setSSLSocketFactory(new SSLConnectionSocketFactory(
+                        trustStoreLocation != null && trustStorePassword != null && trustStrategy != null ?
+                                Try.of(() -> new SSLContextBuilder()
+                                        .loadTrustMaterial(
+                                                new File(trustStoreLocation),
+                                                trustStorePassword.toCharArray(),
+                                                trustStrategy)
+                                        .loadKeyMaterial(Try.of(() ->
+                                                        KeyStore.getInstance(KeyStore.getDefaultType()))
+                                                        .andThenTry(keyStore -> keyStore.load(
+                                                                Try.of(() ->
+                                                                        new FileInputStream(
+                                                                                new File(keyStoreLocation))
+                                                                ).get(),
+                                                                keyStorePassword.toCharArray())
+                                                        ).get(),
+                                                keyStorePassword.toCharArray()).build()
+                                ).get()
+                                :
+                                Try.of(() -> new SSLContextBuilder()
+                                        .loadTrustMaterial(null, new TrustSelfSignedStrategy())
+                                        .loadKeyMaterial(
+                                                Try.of(() ->
+                                                        KeyStore.getInstance(KeyStore.getDefaultType()))
+                                                        .andThenTry(keyStore -> keyStore.load(
+                                                                Try.of(() -> new FileInputStream(
+                                                                        new File(keyStoreLocation))
+                                                                ).get(),
+                                                                keyStorePassword.toCharArray())
+                                                        ).get(),
+                                                keyStorePassword.toCharArray()).build()
+                                ).get(),
+                        NoopHostnameVerifier.INSTANCE)).build();
     }
 }

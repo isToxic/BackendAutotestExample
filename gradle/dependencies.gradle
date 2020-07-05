@@ -20,6 +20,7 @@ ext {
             springContext           : "org.springframework:spring-context:$springVer",
             springTest                : "org.springframework:spring-test:$springVer",
             lombok                      : "org.projectlombok:lombok:$lombokVer",
+            bootSocket               : "org.springframework.boot:spring-boot-starter-webflux:$springBootVer",
             jackson_annotations: "com.fasterxml.jackson.core:jackson-annotations:$jacksonVer",
             jackson_databind     : "com.fasterxml.jackson.core:jackson-databind:$jacksonVer",
             jackson_Schema     : "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVer",
@@ -38,11 +39,11 @@ ext {
             javax                        :  "javax.annotation:javax.annotation-api:$javaxVer",
             httpClient                 :  "org.apache.httpcomponents:httpclient:$httpClientVer",
             commons_lang3      :  "org.apache.commons:commons-lang3:3.10",
-           allure                         : "io.qameta.allure:allure-cucumber5-jvm:2.13.3",
+            allure                        : "io.qameta.allure:allure-cucumber5-jvm:2.13.3",
             allure_plugin             : "io.qameta.allure:allure-gradle:2.8.1"
     ]
 
-    libs.spring = [libs.springKafka, libs.snakeYaml, libs.web_starter]
+    libs.spring = [libs.springKafka, libs.snakeYaml, libs.web_starter, libs.bootSocket]
     libs.cucumber = [libs.cucumber_java8, libs.cucumber_spring, libs.cucumber_junit, libs.allure]
     libs.common = [libs.vavr, libs.javax, libs.httpClient, libs.commons_lang3]
     libs.jackson = [libs.jackson_annotations, libs.jackson_databind, libs.jackson_Schema, libs.json_schema_valid, libs.jsonGenerator]

@@ -10,26 +10,24 @@ import ru.msb.common.dao.ResponseEntityDao;
 import ru.msb.common.http.RestTemplateGenerator;
 import ru.msb.common.models.RestRequestInfo;
 
-import java.util.List;
-
 import static ru.msb.common.Common.genURI;
 
 @Slf4j
 @Service
 public class HttpRestService {
 
-    private final RestTemplateGenerator templateGenerator;
+    private final RestTemplateGenerator clientGenerator;
     private final ResponseEntityDao dao;
 
     @Autowired
-    public HttpRestService(RestTemplateGenerator templateGenerator, ResponseEntityDao dao) {
-        this.templateGenerator = templateGenerator;
+    public HttpRestService(RestTemplateGenerator clientGenerator, ResponseEntityDao dao) {
+        this.clientGenerator = clientGenerator;
         this.dao = dao;
     }
 
     public void doPATCH(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .patch(genURI(
                                                 info.getHost(),
@@ -47,8 +45,8 @@ public class HttpRestService {
     }
 
     public void doPOST(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .post(genURI(
                                                 info.getHost(),
@@ -66,8 +64,8 @@ public class HttpRestService {
     }
 
     public void doPUT(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .put(genURI(
                                                 info.getHost(),
@@ -85,8 +83,8 @@ public class HttpRestService {
     }
 
     public void doDELETE(String requestName, @Nullable MultiValueMap<String, String> headers) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .delete(genURI(
                                                 info.getHost(),
@@ -104,8 +102,8 @@ public class HttpRestService {
     }
 
     public void doGET(String requestName, @Nullable MultiValueMap<String, String> headers) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .get(genURI(
                                                 info.getHost(),
@@ -123,8 +121,8 @@ public class HttpRestService {
     }
 
     public void doHEAD(String requestName, @Nullable MultiValueMap<String, String> headers) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .head(genURI(
                                                 info.getHost(),
@@ -142,8 +140,8 @@ public class HttpRestService {
     }
 
     public void doOPTIONS(String requestName, @Nullable MultiValueMap<String, String> headers) {
-        RestRequestInfo info = templateGenerator.getRequestSettings(requestName);
-        dao.save(templateGenerator.takeTemplateFromSettings(requestName)
+        RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
+        dao.save(clientGenerator.takeTemplateFromSettings(requestName)
                         .exchange(RequestEntity
                                         .options(genURI(
                                                 info.getHost(),

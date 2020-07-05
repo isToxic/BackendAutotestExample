@@ -39,11 +39,17 @@ public class Common {
                 valueType,
                 Thread.currentThread().getName()
         );
-        log.debug("Сгенерирован ключ для хранения StringContent: {}",  key.toSeq().toString());
+        log.debug("Сгенерирован ключ для хранения StringContent: {}", key.toSeq().toString());
         return key;
     }
 
-    public static URI genURI(String host, @Nullable String mapping,@Nullable String port) {
+    public static Tuple generateByteArrayKey(@NonNull String requestName, @NonNull String threadName) {
+        Tuple key = Tuple.of(requestName, threadName);
+        log.debug("Сгенерирован ключ для хранения ByteArray: {}", key.toSeq().toString());
+        return key;
+    }
+
+    public static URI genURI(String host, @Nullable String mapping, @Nullable String port) {
         return URI.create(format(
                 "%s/%s:%s",
                 host,

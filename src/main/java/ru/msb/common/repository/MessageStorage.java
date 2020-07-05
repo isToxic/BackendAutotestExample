@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import ru.msb.common.dao.ByteArrayContentDao;
 import ru.msb.common.dao.ConsumerRecordsDao;
 import ru.msb.common.dao.ResponseEntityDao;
 import ru.msb.common.dao.StringContentDao;
@@ -15,8 +16,8 @@ import java.util.Optional;
 import static ru.msb.common.Common.*;
 
 @Repository
-public class MessageStorage implements
-        ConsumerRecordsDao, ResponseEntityDao, StringContentDao {
+public class MessageStorage implements ConsumerRecordsDao, ResponseEntityDao,
+        StringContentDao, ByteArrayContentDao {
     @Override
     public ConsumerRecord<String, String> getConsumerRecord(Tuple key) {
         return Optional.ofNullable(
@@ -95,5 +96,29 @@ public class MessageStorage implements
         Tuple key = generateStringKey(valueType);
         STRING_CONCURRENT_MAP.put(key, value);
         return key;
+    }
+
+    @Override
+    public byte[] getByteArray(Tuple name) {
+        return Optional.ofNullable(
+                BYTE_ARRAY_CONCURRENT_MAP.getOrDefault(name, null))
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format(
+                                        "No ByteArray with name: %s",
+                                        name.toString()
+                                )
+                        )
+                );
+    }
+
+    @Override
+    public Collection<byte[]> getAllByteArrays() {
+        return BYTE_ARRAY_CONCURRENT_MAP.values();
+    }
+
+    @Override
+    public void save(String requestName, String threadName, byte[] value) {
+        BYTE_ARRAY_CONCURRENT_MAP.put(generateByteArrayKey(requestName, threadName), value);
     }
 }
