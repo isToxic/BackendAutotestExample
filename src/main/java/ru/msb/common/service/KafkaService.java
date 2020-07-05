@@ -129,7 +129,7 @@ public class KafkaService  implements ConsumerSeekAware {
                 .get();
         if (timeout == null) {
             while (wait.get()) {
-                Try.run(() -> Thread.sleep(10)).get();
+                Try.run(() -> Thread.sleep(10L)).get();
             }
         } else {
             Try.run(() -> Thread.sleep(timeout)).get();

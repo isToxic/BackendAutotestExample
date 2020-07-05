@@ -3,17 +3,18 @@ project:
     broker1:
       host: 192.168.1.5:9092
       group-id: myGroup
-      auto-commit-interval: 50
-      max-poll-interval: 500
-      max-poll-records: 5
+      auto-commit-interval: 1500
+      max-poll-interval: 1000
+      max-poll-records: 100
     broker2:
       host: 192.168.1.3:9093
       group-id: myGroup2
       ssl-stores:
         - user3
   rest:
-    eurookna:
-      host: http://www.google.com
+    google:
+      host: https://reqres.in
+      mapping: api/products/3
       trust-strategy: NOT_USED
     request2:
       host: http://google.com

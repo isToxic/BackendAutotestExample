@@ -1,6 +1,7 @@
 package ru.msb.common.repository;
 
 import io.vavr.Tuple;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -15,8 +16,9 @@ import java.util.Optional;
 
 import static ru.msb.common.Common.*;
 
+@Slf4j
 @Repository
-public class MessageStorage implements ConsumerRecordsDao, ResponseEntityDao,
+public class MessagesRepository implements ConsumerRecordsDao, ResponseEntityDao,
         StringContentDao, ByteArrayContentDao {
     @Override
     public ConsumerRecord<String, String> getConsumerRecord(Tuple key) {
@@ -66,6 +68,7 @@ public class MessageStorage implements ConsumerRecordsDao, ResponseEntityDao,
 
     @Override
     public void save(ResponseEntity<String> responseEntity, String requestName) {
+        log.debug("Сохранено сообщение:\n{}", responseEntity.getBody());
         RESPONSE_ENTITY_CONCURRENT_MAP.put(
                 generateResponseEntityKey(requestName),
                 responseEntity

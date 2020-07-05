@@ -47,7 +47,7 @@ public class ResultCheckSteps implements Ru {
                         statusCode
                 )
         );
-        Допустим("проверяю, что ответ на REST запрос {string} получен с успешным статус кодом", (String requestName, String statusCode) ->
+        Допустим("проверяю, что ответ на REST запрос {string} получен с успешным статус кодом", (String requestName) ->
                 assertTrue(responseEntityDao.getResponseEntity(generateResponseEntityKey(requestName)).getStatusCode().is2xxSuccessful())
         );
         Допустим("проверяю, что ответ на REST запрос {string} содержит заголовки:", (String requestName, DataTable headers) ->

@@ -3,7 +3,7 @@ package ru.msb.stepdefs;
 import io.cucumber.java8.Ru;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.msb.common.repository.MessageStorage;
+import ru.msb.common.repository.MessagesRepository;
 import ru.msb.common.service.WebSocketService;
 
 import static ru.msb.common.Common.WS_STRING_REQUEST_MESSAGE;
@@ -17,7 +17,7 @@ public class WebSocketTransportSteps implements Ru {
     private WebSocketService webSocketService;
 
     @Autowired
-    private MessageStorage storage;
+    private MessagesRepository storage;
 
     public WebSocketTransportSteps() {
         Допустим("отправляю по ws соединению {string} подготовленное сообщение", (String reqestName) ->
