@@ -116,10 +116,9 @@ public class WebSocketService {
                                 .andThen(keyStore -> Try.of(() ->
                                         Collections.list(Try.of(trustStore::aliases).get())
                                                 .stream()
-                                                .filter(t -> Try.of(() -> trustStore.isCertificateEntry(t)
-                                                ).get())
-                                                .map(t -> Try.of(() -> trustStore.getCertificate(t)
-                                                ).get()).toArray(X509Certificate[]::new))
+                                                .filter(t -> Try.of(() -> trustStore.isCertificateEntry(t)).get())
+                                                .map(t -> Try.of(() -> trustStore.getCertificate(t)).get())
+                                                .toArray(X509Certificate[]::new))
                                         .andThen(certificates ->
                                                 Try.of(() -> keyStore.getCertificateChain(keyAlias))
                                                         .andThen(certChain -> Try.of(() -> Arrays.stream(certChain)
