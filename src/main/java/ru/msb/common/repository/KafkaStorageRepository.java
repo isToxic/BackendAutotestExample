@@ -1,37 +1,21 @@
 package ru.msb.common.repository;
 
+
 import io.vavr.Tuple;
 import org.springframework.stereotype.Repository;
-import ru.msb.common.dao.KafkaStorageDao;
 import ru.msb.common.kafka.KafkaStorage;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Repository
-public class KafkaStorageRepository implements KafkaStorageDao {
+public interface KafkaStorageRepository {
+    ConcurrentMap<Tuple, KafkaStorage> KAFKA_STORAGE_CONCURRENT_MAP = new ConcurrentHashMap<>();
 
-    @Override
-    public KafkaStorage getKafkaStrorage(Tuple name) {
-        return Optional.ofNullable(KAFKA_STORAGE_CONCURRENT_MAP.get(name))
-                .orElseThrow(
-                        () -> new IllegalArgumentException(
-                                String.format(
-                                        "No storage with name: %s",
-                                        name.toString()
-                                )
-                        )
-                );
-    }
+     KafkaStorage getKafkaStrorage(Tuple name);
 
-    @Override
-    public Collection<KafkaStorage> getAllKafkaStrorages() {
-        return KAFKA_STORAGE_CONCURRENT_MAP.values();
-    }
+     Collection<KafkaStorage> getAllKafkaStrorages();
 
-    @Override
-    public void save(KafkaStorage storage) {
-        KAFKA_STORAGE_CONCURRENT_MAP.put(storage.getName(), storage);
-    }
-
+     void save(KafkaStorage storage);
 }

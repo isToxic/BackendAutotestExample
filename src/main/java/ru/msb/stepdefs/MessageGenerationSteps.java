@@ -3,7 +3,7 @@ package ru.msb.stepdefs;
 import io.cucumber.java8.Ru;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.msb.common.Common;
-import ru.msb.common.repository.MessagesRepository;
+import ru.msb.common.repository.TestCache;
 import ru.msb.common.service.JsonProcessingService;
 
 import static ru.msb.common.Common.REST_STRING_REQUEST_MESSAGE;
@@ -14,7 +14,7 @@ public class MessageGenerationSteps implements Ru {
     private JsonProcessingService service;
 
     @Autowired
-    private MessagesRepository storage;
+    private TestCache storage;
 
     public MessageGenerationSteps() {
         Допустим("генерирую сообщение по схеме {string} для REST запроса",

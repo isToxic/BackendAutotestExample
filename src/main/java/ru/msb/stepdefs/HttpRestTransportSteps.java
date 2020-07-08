@@ -4,7 +4,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.Ru;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.LinkedMultiValueMap;
-import ru.msb.common.repository.MessagesRepository;
+import ru.msb.common.repository.TestCache;
 import ru.msb.common.service.HttpRestService;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import static ru.msb.common.Common.generateStringKey;
 public class HttpRestTransportSteps implements Ru {
 
     @Autowired
-    private MessagesRepository storage;
+    private TestCache storage;
 
     @Autowired
     private HttpRestService service;

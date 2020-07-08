@@ -47,14 +47,16 @@ public class JsonProcessingService {
     }
 
     public String generateJsonFromSchema(String schemaAsString) {
-        return new Generator(
+        return Try.of(() -> new Generator(
                 new SchemaV4().wrap(
                         Try.of(() -> JsonElement
                                 .readFrom(schemaAsString)
                         ).get()),
                 null)
                 .generate()
-                .toString();
+                .toString()
+        ).andThen(s -> log.debug("Сгенерировано сообщение: {}", s)
+        ).get();
     }
 
     public boolean validateIt(JsonNode schema, JsonNode json) {

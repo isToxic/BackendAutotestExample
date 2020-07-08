@@ -12,9 +12,9 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import ru.msb.common.dao.KafkaStorageDao;
 import ru.msb.common.models.KafkaInfo;
 import ru.msb.common.models.SSLStoreInfo;
+import ru.msb.common.repository.KafkaStorageRepository;
 import ru.msb.common.setting.ProjectSettings;
 
 import java.util.HashMap;
@@ -22,7 +22,8 @@ import java.util.Map;
 
 import static org.apache.kafka.clients.CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-import static org.apache.kafka.clients.producer.ProducerConfig.*;
+import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.common.config.SslConfigs.*;
 
 @Slf4j
@@ -31,10 +32,10 @@ import static org.apache.kafka.common.config.SslConfigs.*;
 public class KafkaConfig {
 
     private final ProjectSettings prop;
-    private final KafkaStorageDao repository;
+    private final KafkaStorageRepository repository;
 
     @Autowired
-    public KafkaConfig(ProjectSettings prop, KafkaStorageDao repository) {
+    public KafkaConfig(ProjectSettings prop, KafkaStorageRepository repository) {
         this.prop = prop;
         this.repository = repository;
     }
@@ -42,8 +43,7 @@ public class KafkaConfig {
     @Bean
     public void generateStorages() {
         prop.getKafka()
-                .forEach((name, settings) ->
-                        {
+                .forEach((name, settings) -> {
                             repository.save(
                                     KafkaStorage.builder()
                                             .kafkaTemplate(getKafkaTemplate(settings, null))

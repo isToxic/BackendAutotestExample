@@ -9,6 +9,6 @@ public class WebSocketClientInfo {
 
     private String url;
     private String mapping;
-    private Boolean wss;
+    private Boolean secure;
     private String sslStore;
 }

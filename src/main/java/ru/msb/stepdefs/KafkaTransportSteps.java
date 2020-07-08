@@ -3,7 +3,7 @@ package ru.msb.stepdefs;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.Ru;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.msb.common.repository.MessagesRepository;
+import ru.msb.common.repository.TestCache;
 import ru.msb.common.service.KafkaService;
 
 import static ru.msb.common.Common.KAFKA_STRING_REQUEST_MESSAGE;
@@ -13,7 +13,7 @@ import static ru.msb.common.kafka.KafkaStorage.genKafkaStorageName;
 public class KafkaTransportSteps implements Ru {
 
     @Autowired
-    private MessagesRepository storage;
+    private TestCache storage;
 
     @Autowired
     private KafkaService service;
@@ -100,28 +100,28 @@ public class KafkaTransportSteps implements Ru {
                         )
         );
         Допустим("вычитываю сообщение из очереди {string} брокера {string} с ключом {string}", (String topic, String brokerName, String messageKey) ->
-                service.listen(
+                service.listenDefaultTimeout(
                         genKafkaStorageName(brokerName, null),
                         topic,
                         consumerRecord -> !messageKey.equals(consumerRecord.key())
                 )
         );
         Допустим("вычитываю сообщение из очереди {string} брокера {string} содержащее {string}", (String topic, String brokerName, String messageValue) ->
-                service.listen(
+                service.listenDefaultTimeout(
                         genKafkaStorageName(brokerName, null),
                         topic,
                         consumerRecord -> !consumerRecord.value().contains(messageValue)
                 )
         );
         Допустим("вычитываю сообщение, используя сертификат {string}, из очереди {string} брокера {string} с ключом {string}", (String ssl, String topic, String brokerName, String messageKey) ->
-                service.listen(
+                service.listenDefaultTimeout(
                         genKafkaStorageName(brokerName, ssl),
                         topic,
                         consumerRecord -> !messageKey.equals(consumerRecord.key())
                 )
         );
         Допустим("вычитываю сообщение, используя сертификат {string}, из очереди {string} брокера {string} содержащее {string}", (String ssl, String topic, String brokerName, String messageValue) ->
-                service.listen(
+                service.listenDefaultTimeout(
                         genKafkaStorageName(brokerName, ssl),
                         topic,
                         consumerRecord -> !consumerRecord.value().contains(messageValue)

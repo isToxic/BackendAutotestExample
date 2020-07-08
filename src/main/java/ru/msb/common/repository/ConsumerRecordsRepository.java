@@ -1,4 +1,4 @@
-package ru.msb.common.dao;
+package ru.msb.common.repository;
 
 
 import io.vavr.Tuple;
@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Repository
-public interface ConsumerRecordsDao {
+public interface ConsumerRecordsRepository {
     ConcurrentMap<Tuple, ConsumerRecord<String, String>> CONSUMER_RECORD_CONCURRENT_MAP = new ConcurrentHashMap<>();
 
     ConsumerRecord<String, String> getConsumerRecord(Tuple key);

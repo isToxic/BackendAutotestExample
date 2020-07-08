@@ -6,10 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
-import ru.msb.common.dao.ByteArrayContentDao;
-import ru.msb.common.dao.ConsumerRecordsDao;
-import ru.msb.common.dao.ResponseEntityDao;
-import ru.msb.common.dao.StringContentDao;
+import ru.msb.common.kafka.KafkaStorage;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -18,8 +15,8 @@ import static ru.msb.common.Common.*;
 
 @Slf4j
 @Repository
-public class MessagesRepository implements ConsumerRecordsDao, ResponseEntityDao,
-        StringContentDao, ByteArrayContentDao {
+public class TestCache implements ConsumerRecordsRepository, ResponseEntityRepository,
+        StringContentRepository, ByteArrayContentRepository, KafkaStorageRepository {
     @Override
     public ConsumerRecord<String, String> getConsumerRecord(Tuple key) {
         return Optional.ofNullable(
@@ -123,5 +120,28 @@ public class MessagesRepository implements ConsumerRecordsDao, ResponseEntityDao
     @Override
     public void save(String requestName, String threadName, byte[] value) {
         BYTE_ARRAY_CONCURRENT_MAP.put(generateByteArrayKey(requestName, threadName), value);
+    }
+
+    @Override
+    public KafkaStorage getKafkaStrorage(Tuple name) {
+        return Optional.ofNullable(KAFKA_STORAGE_CONCURRENT_MAP.get(name))
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format(
+                                        "No storage with name: %s",
+                                        name.toString()
+                                )
+                        )
+                );
+    }
+
+    @Override
+    public Collection<KafkaStorage> getAllKafkaStrorages() {
+        return KAFKA_STORAGE_CONCURRENT_MAP.values();
+    }
+
+    @Override
+    public void save(KafkaStorage storage) {
+        KAFKA_STORAGE_CONCURRENT_MAP.put(storage.getName(), storage);
     }
 }

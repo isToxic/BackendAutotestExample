@@ -12,7 +12,7 @@ project:
       ssl-stores:
         - user3
   rest:
-    google:
+    reqres:
       host: https://reqres.in
       mapping: api/products/3
       trust-strategy: NOT_USED
@@ -25,7 +25,7 @@ project:
     test:
       url: ws://echo.websocket.org
       mapping: /echo
-      wss: false
+      secure: false
   sslStores:
     user1:
       keystore-location: userStores//key1.jks

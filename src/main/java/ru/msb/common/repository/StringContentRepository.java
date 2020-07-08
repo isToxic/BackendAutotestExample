@@ -1,4 +1,4 @@
-package ru.msb.common.dao;
+package ru.msb.common.repository;
 
 import io.vavr.Tuple;
 import org.springframework.stereotype.Repository;
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Repository
-public interface StringContentDao {
+public interface StringContentRepository {
 
     ConcurrentMap<Tuple, String> STRING_CONCURRENT_MAP = new ConcurrentHashMap<>();
 

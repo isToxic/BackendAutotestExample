@@ -1,4 +1,4 @@
-package ru.msb.common.dao;
+package ru.msb.common.repository;
 
 import io.vavr.Tuple;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Repository
-public interface ResponseEntityDao {
+public interface ResponseEntityRepository {
     ConcurrentMap<Tuple, ResponseEntity<String>> RESPONSE_ENTITY_CONCURRENT_MAP = new ConcurrentHashMap<>();
 
     ResponseEntity<String> getResponseEntity(Tuple key);

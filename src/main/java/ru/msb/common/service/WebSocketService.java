@@ -13,9 +13,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
-import ru.msb.common.dao.ByteArrayContentDao;
 import ru.msb.common.models.SSLStoreInfo;
 import ru.msb.common.models.WebSocketClientInfo;
+import ru.msb.common.repository.ByteArrayContentRepository;
 import ru.msb.common.setting.ProjectSettings;
 
 import java.io.FileInputStream;
@@ -35,33 +35,33 @@ import java.util.stream.Collectors;
 @Service
 public class WebSocketService {
 
-    private final ByteArrayContentDao byteArrayContentDao;
+    private final ByteArrayContentRepository byteArrayContentRepository;
     private final ProjectSettings settings;
 
     @Autowired
-    public WebSocketService(ByteArrayContentDao byteArrayContentDao, ProjectSettings settings) {
-        this.byteArrayContentDao = byteArrayContentDao;
+    public WebSocketService(ByteArrayContentRepository byteArrayContentRepository, ProjectSettings settings) {
+        this.byteArrayContentRepository = byteArrayContentRepository;
         this.settings = settings;
     }
 
-    public void sendAndSubscribe(String requestName, byte[] sendingData) {
+    public void sendAndSubscribe(String requestName, byte[] sendingData, long subscriptionTime) {
         final CountDownLatch latch = new CountDownLatch(1);
         final String threadName = Thread.currentThread().getName();
         Flux.merge(
                 Flux.range(0, 1)
                         .subscribeOn(Schedulers.single())
-                        .map(id -> sendAndSubscribe(requestName, threadName, sendingData))
+                        .map(id -> sendAndSubscribe(requestName, threadName, sendingData, subscriptionTime))
                         .flatMap(sp -> sp.doOnTerminate(latch::countDown))
                         .parallel()
         )
                 .subscribe();
-        Try.of(() -> latch.await(20, TimeUnit.SECONDS)).get();
+        Try.of(() -> latch.await((subscriptionTime + 1), TimeUnit.SECONDS)).get();
     }
 
-    private Mono<Void> sendAndSubscribe(String requestName, String threadName, byte[] data) {
+    private Mono<Void> sendAndSubscribe(String requestName, String threadName, byte[] data, long subscriptionTime) {
         final WebSocketClientInfo info = settings.getWss().get(requestName);
-        final SSLStoreInfo ssl = info.getWss() ? settings.getSslStores().get(info.getSslStore()) : null;
-        return (info.getWss() ?
+        final SSLStoreInfo ssl = info.getSecure() ? settings.getSslStores().get(info.getSslStore()) : null;
+        return (ssl == null ? new ReactorNettyWebSocketClient() :
                 new ReactorNettyWebSocketClient(
                         getSecureClient(
                                 ssl.getTruststoreLocation(),
@@ -69,87 +69,80 @@ public class WebSocketService {
                                 ssl.getKeystoreLocation(),
                                 ssl.getKeystorePassword(),
                                 requestName
-                        ))
-                : new ReactorNettyWebSocketClient())
+                        )))
                 .execute(
                         URI.create(info.getUrl() + info.getMapping()),
                         session -> session.send(
                                 Mono.just(session.binaryMessage(dataBufferFactory -> dataBufferFactory.wrap(data)))
                         )
                                 .thenMany(session.receive()
-                                        .take(Duration.ofSeconds(10L))
+                                        .take(Duration.ofSeconds(subscriptionTime))
                                         .map(WebSocketMessage::retain)
                                         .doOnNext(dataBuffer -> {
-                                            log.info("Получено сообщение: \n{}\nв потоке: {}",dataBuffer.getPayload().toString(Charset.defaultCharset()), threadName);
+                                            log.info("Получено сообщение: \n{}\nв потоке: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()), threadName);
                                             byte[] bytes = new byte[dataBuffer.getPayload().readableByteCount()];
                                             dataBuffer.getPayload().read(bytes);
                                             DataBufferUtils.release(dataBuffer.getPayload());
-                                            byteArrayContentDao.save(requestName, threadName, bytes);
+                                            byteArrayContentRepository.save(requestName, threadName, bytes);
                                         })
                                 )
-                                .doOnSubscribe(subscriber -> log.info(threadName + ".session create"))
-                                .doFinally(signalType -> log.info(threadName + ".session close"))
+                                .doOnSubscribe(subscriber -> log.info(session.getId() + " подписан на вычитку ответа"))
+                                .doFinally(signalType -> log.info(session.getId() + " завершена вычитка ответа"))
                                 .then());
     }
 
-    public HttpClient getSecureClient(String trustStorePath, String trustStorePass, String keyStorePath, String keyStorePass, String keyAlias) {
-        return Try.of(() ->
-                HttpClient.create().secure(
-                        sslContextSpec ->
-                                Try.of(() ->
-                                        Try.of(() -> KeyStore.getInstance(KeyStore.getDefaultType())
-                                        ).andThen(trustStore ->
-                                                Try.of(() ->
-                                                        KeyStore.getInstance(KeyStore.getDefaultType()))
-                                                        .andThen(keyStore ->
-                                                                Try.run(() ->
-                                                                        trustStore.load(Try.of(() ->
-                                                                                new FileInputStream(
-                                                                                        Try.of(() ->
-                                                                                                ResourceUtils.getFile(trustStorePath)
-                                                                                        ).get())).get(), trustStorePass.toCharArray())).get())
-                                                        .andThen(keyStore ->
-                                                                Try.run(() ->
-                                                                        keyStore.load(
-                                                                                Try.of(() ->
-                                                                                        new FileInputStream(
-                                                                                                Try.of(() -> ResourceUtils.getFile(keyStorePath)
-                                                                                                ).get())).get(),
-                                                                                keyStorePass.toCharArray())
-                                                                ).get())
-                                                        .andThen(keyStore ->
+    private HttpClient getSecureClient(String trustStorePath, String trustStorePass, String keyStorePath, String keyStorePass, String keyAlias) {
+        return Try.of(() -> HttpClient.create().secure(
+                sslContextSpec -> Try.of(() ->
+                        Try.of(() -> KeyStore.getInstance(KeyStore.getDefaultType())
+                        ).andThen(trustStore -> Try.of(() ->
+                                KeyStore.getInstance(KeyStore.getDefaultType()))
+                                .andThen(keyStore ->
+                                        Try.run(() ->
+                                                trustStore.load(Try.of(() ->
+                                                        new FileInputStream(
                                                                 Try.of(() ->
-                                                                        Collections.list(Try.of(trustStore::aliases).get())
-                                                                                .stream()
-                                                                                .filter(t -> Try.of(() -> trustStore.isCertificateEntry(t)
-                                                                                ).get())
-                                                                                .map(t -> Try.of(() -> trustStore.getCertificate(t)
-                                                                                ).get()).toArray(X509Certificate[]::new))
-                                                                        .andThen(certificates ->
-                                                                                Try.of(() -> keyStore.getCertificateChain(keyAlias))
-                                                                                        .andThen(certChain -> Try.of(() -> Arrays.stream(certChain)
-                                                                                                .map(certificate -> (X509Certificate) certificate)
-                                                                                                .collect(Collectors.toList())
-                                                                                                .toArray(new X509Certificate[certChain.length]))
-                                                                                                .andThen(x509CertificateChain ->
-                                                                                                        Try.of(() -> sslContextSpec
-                                                                                                                .sslContext(
-                                                                                                                        SslContextBuilder.forClient()
-                                                                                                                                .keyManager(
-                                                                                                                                        Try.of(() -> (PrivateKey) keyStore.getKey(keyAlias, keyStorePass.toCharArray())).get(),
-                                                                                                                                        keyStorePass,
-                                                                                                                                        x509CertificateChain)
-                                                                                                                                .trustManager(certificates)
-                                                                                                                                .build()
-                                                                                                                ).build()
-                                                                                                        ).get()
-                                                                                                ).get()
-                                                                                        ).get()
+                                                                        ResourceUtils.getFile(trustStorePath)
+                                                                ).get())).get(), trustStorePass.toCharArray())).get())
+                                .andThen(keyStore ->
+                                        Try.run(() ->
+                                                keyStore.load(
+                                                        Try.of(() ->
+                                                                new FileInputStream(
+                                                                        Try.of(() -> ResourceUtils.getFile(keyStorePath)
+                                                                        ).get())).get(),
+                                                        keyStorePass.toCharArray())
+                                        ).get())
+                                .andThen(keyStore -> Try.of(() ->
+                                        Collections.list(Try.of(trustStore::aliases).get())
+                                                .stream()
+                                                .filter(t -> Try.of(() -> trustStore.isCertificateEntry(t)
+                                                ).get())
+                                                .map(t -> Try.of(() -> trustStore.getCertificate(t)
+                                                ).get()).toArray(X509Certificate[]::new))
+                                        .andThen(certificates ->
+                                                Try.of(() -> keyStore.getCertificateChain(keyAlias))
+                                                        .andThen(certChain -> Try.of(() -> Arrays.stream(certChain)
+                                                                .map(certificate -> (X509Certificate) certificate)
+                                                                .collect(Collectors.toList())
+                                                                .toArray(new X509Certificate[certChain.length]))
+                                                                .andThen(x509CertificateChain -> Try.of(() -> sslContextSpec
+                                                                                .sslContext(
+                                                                                        SslContextBuilder.forClient()
+                                                                                                .keyManager(
+                                                                                                        Try.of(() -> (PrivateKey) keyStore.getKey(keyAlias, keyStorePass.toCharArray())).get(),
+                                                                                                        keyStorePass,
+                                                                                                        x509CertificateChain)
+                                                                                                .trustManager(certificates)
+                                                                                                .build()
+                                                                                ).build()
                                                                         ).get()
+                                                                ).get()
                                                         ).get()
-                                        ).get()
-                                ).get()
-                )
+                                        ).get())
+                                .get()
+                        ).get()
+                ).get())
         ).get();
     }
 }

@@ -17,8 +17,8 @@ import org.springframework.kafka.listener.adapter.RecordFilterStrategy;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import ru.msb.common.dao.ConsumerRecordsDao;
-import ru.msb.common.dao.KafkaStorageDao;
+import ru.msb.common.repository.ConsumerRecordsRepository;
+import ru.msb.common.repository.KafkaStorageRepository;
 
 import java.util.*;
 import java.util.concurrent.Future;
@@ -31,22 +31,22 @@ import static io.vavr.control.Try.of;
  */
 @Slf4j
 @Service
-public class KafkaService  implements ConsumerSeekAware {
+public class KafkaService {
 
-    private final KafkaStorageDao kafkaDao;
-    private final ConsumerRecordsDao recordsDao;
+    private final KafkaStorageRepository storageRepository;
+    private final ConsumerRecordsRepository recordsRepository;
 
     @Autowired
-    public KafkaService(KafkaStorageDao kafkaDao, ConsumerRecordsDao recordsDao) {
-        this.kafkaDao = kafkaDao;
-        this.recordsDao = recordsDao;
+    public KafkaService(KafkaStorageRepository storageRepository, ConsumerRecordsRepository recordsRepository) {
+        this.storageRepository = storageRepository;
+        this.recordsRepository = recordsRepository;
     }
 
     public void listenDefaultTimeout(
             @NonNull Tuple storageName,
             @NonNull String topic,
             RecordFilterStrategy<String, String> filterStrategy) {
-        listen(storageName, topic, filterStrategy, 30000L);
+        listen(storageName, topic, filterStrategy, 60000L);
     }
 
     public void listen(
@@ -62,7 +62,7 @@ public class KafkaService  implements ConsumerSeekAware {
             @Nullable String key,
             @NonNull String data,
             @Nullable Iterable<Header> headers) {
-        KafkaTemplate<String, String> template = kafkaDao.getKafkaStrorage(storageName).getKafkaTemplate();
+        KafkaTemplate<String, String> template = storageRepository.getKafkaStrorage(storageName).getKafkaTemplate();
         send(template, genRecord(template, topic, key, data, headers));
     }
 
@@ -114,7 +114,7 @@ public class KafkaService  implements ConsumerSeekAware {
                 .andThen(listenerContainer -> listenerContainer.setupMessageListener(
                         new FilteringMessageListenerAdapter<>(
                                 data -> of(() ->
-                                        Try.run(() -> recordsDao.save(data, threadName))
+                                        Try.run(() -> recordsRepository.save(data, threadName))
                                                 .onSuccess(result -> log.info("Из очереди {} прочитано сообщение: {}",
                                                         topic, data.value())
                                                 )
@@ -139,7 +139,7 @@ public class KafkaService  implements ConsumerSeekAware {
     private ConcurrentKafkaListenerContainerFactory<String, String> getContainerFactory(Tuple storageName) {
         return of((CheckedFunction0<ConcurrentKafkaListenerContainerFactory<String, String>>) ConcurrentKafkaListenerContainerFactory::new)
                 .andThen(
-                        factory -> factory.setConsumerFactory(kafkaDao.getKafkaStrorage(storageName).getConsumerFactory())
+                        factory -> factory.setConsumerFactory(storageRepository.getKafkaStrorage(storageName).getConsumerFactory())
                 )
                 .andThen(factory -> factory.setAutoStartup(false))
                 .andThen(factory -> factory.setConcurrency(4))
