@@ -14,13 +14,8 @@ project:
   rest:
     reqres:
       host: https://reqres.in
-      mapping: api/products/3
+      mapping: /api/products/3
       trust-strategy: NOT_USED
-    request2:
-      host: http://google.com
-      port: 8080
-      mapping: index
-      trust-strategy:  NOT_USED
   wss:
     test:
       url: ws://echo.websocket.org
