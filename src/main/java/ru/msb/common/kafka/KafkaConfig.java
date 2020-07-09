@@ -26,6 +26,9 @@ import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CL
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.common.config.SslConfigs.*;
 
+/**
+ * Конфигурация подключения к Kafka
+ */
 @Slf4j
 @EnableKafka
 @Configuration
@@ -40,6 +43,9 @@ public class KafkaConfig {
         this.repository = repository;
     }
 
+    /**
+     * Генерация клиентов для вычитки/записи сообщений в Kafka и сохранение в репозитории
+     */
     @Bean
     public void generateStorages() {
         prop.getKafka()
@@ -72,7 +78,7 @@ public class KafkaConfig {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(getConfigs(setting, prop.getSslStores().get(sslStorename))));
     }
 
-    private DefaultKafkaConsumerFactory<String, String> getConsumerFactory(@NonNull KafkaInfo setting, @Nullable String sslStorename){
+    private DefaultKafkaConsumerFactory<String, String> getConsumerFactory(@NonNull KafkaInfo setting, @Nullable String sslStorename) {
         return new DefaultKafkaConsumerFactory<>(getConfigs(setting, prop.getSslStores().get(sslStorename)));
     }
 

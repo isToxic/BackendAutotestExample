@@ -28,6 +28,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+/**
+ * Сервис для отправки/получения сообщений по Web socket
+ */
 @Slf4j
 @Service
 public class WebSocketService {
@@ -41,6 +44,13 @@ public class WebSocketService {
         this.settings = settings;
     }
 
+    /**
+     * Отправление и слушание ответа WS
+     *
+     * @param requestName      название коннекта
+     * @param sendingData      отпраляемые данные
+     * @param subscriptionTime время подписки на вычитку данных
+     */
     public void sendAndSubscribe(String requestName, byte[] sendingData, long subscriptionTime) {
         Try.of(() ->
                 Flux.from(sendAndSubscribe(requestName, Thread.currentThread().getName(), sendingData, subscriptionTime)).subscribe())
@@ -69,7 +79,7 @@ public class WebSocketService {
                                         .take(Duration.ofSeconds(subscriptionTime))
                                         .map(WebSocketMessage::retain)
                                         .doOnNext(dataBuffer -> {
-                                            log.info("Получено сообщение: \n{}\nв сессии: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()), String.format("%s:%s",threadName, session.getId()));
+                                            log.info("Получено сообщение: \n{}\nв сессии: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()), String.format("%s:%s", threadName, session.getId()));
                                             byte[] bytes = new byte[dataBuffer.getPayload().readableByteCount()];
                                             dataBuffer.getPayload().read(bytes);
                                             DataBufferUtils.release(dataBuffer.getPayload());

@@ -1,13 +1,12 @@
 package ru.msb.common.models;
 
 import lombok.Data;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * Класс-структура конфигурации Кафка .yml файла
+ * Структура конфигурации Кафка .yml файла
  */
 @Data
 @Component

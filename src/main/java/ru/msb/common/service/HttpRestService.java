@@ -6,12 +6,15 @@ import org.springframework.http.RequestEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
-import ru.msb.common.repository.ResponseEntityRepository;
 import ru.msb.common.http.RestTemplateGenerator;
 import ru.msb.common.models.RestRequestInfo;
+import ru.msb.common.repository.ResponseEntityRepository;
 
 import static ru.msb.common.Common.genURI;
 
+/**
+ * Серис для выполнения REST запросов
+ */
 @Slf4j
 @Service
 public class HttpRestService {
@@ -25,6 +28,13 @@ public class HttpRestService {
         this.repository = repository;
     }
 
+    /**
+     * Выполнение REST запроса методом PATCH
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     * @param body        тело запроса
+     */
     public void doPATCH(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)
@@ -44,6 +54,13 @@ public class HttpRestService {
                 requestName);
     }
 
+    /**
+     * Выполнение REST запроса методом POST
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     * @param body        тело запроса
+     */
     public void doPOST(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)
@@ -63,6 +80,13 @@ public class HttpRestService {
                 requestName);
     }
 
+    /**
+     * Выполнение REST запроса методом PUT
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     * @param body        тело запроса
+     */
     public void doPUT(String requestName, @Nullable MultiValueMap<String, String> headers, String body) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)
@@ -82,6 +106,12 @@ public class HttpRestService {
                 requestName);
     }
 
+    /**
+     * Выполнение REST запроса методом PATCH
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     */
     public void doDELETE(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)
@@ -101,6 +131,12 @@ public class HttpRestService {
                 requestName);
     }
 
+    /**
+     * Выполнение REST запроса методом GET
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     */
     public void doGET(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)
@@ -120,6 +156,12 @@ public class HttpRestService {
                 requestName);
     }
 
+    /**
+     * Выполнение REST запроса методом HEAD
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     */
     public void doHEAD(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)
@@ -139,6 +181,12 @@ public class HttpRestService {
                 requestName);
     }
 
+    /**
+     * Выполнение REST запроса методом OPTIONS
+     *
+     * @param requestName название коннекта
+     * @param headers     отправляемые заголовки
+     */
     public void doOPTIONS(String requestName, @Nullable MultiValueMap<String, String> headers) {
         RestRequestInfo info = clientGenerator.getRequestSettings(requestName);
         repository.save(clientGenerator.takeTemplateFromSettings(requestName)

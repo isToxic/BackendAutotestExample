@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import ru.msb.common.setting.YamlProppertySourceFactory;
 
+/**
+ * Конфигурация профиля second
+ */
 @Profile("second")
 @EnableConfigurationProperties
 @ComponentScan(basePackages = "ru.msb")

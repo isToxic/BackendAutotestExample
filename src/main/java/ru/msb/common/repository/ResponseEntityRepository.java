@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * Описание хранилища ResponseEntity
+ */
 @Repository
 public interface ResponseEntityRepository {
     ConcurrentMap<Tuple, ResponseEntity<String>> RESPONSE_ENTITY_CONCURRENT_MAP = new ConcurrentHashMap<>();

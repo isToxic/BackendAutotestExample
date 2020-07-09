@@ -30,6 +30,9 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.util.Map;
 
+/**
+ * Конфигурайия и генерация клиента для выполнения REST запросов
+ */
 @Slf4j
 @Component
 public class RestTemplateGenerator {
@@ -41,10 +44,22 @@ public class RestTemplateGenerator {
         this.settings = settings;
     }
 
-    public RestRequestInfo getRequestSettings(String requestName){
+    /**
+     * Получение настроек коннекта
+     *
+     * @param requestName название коннекта
+     * @return RestRequestInfo
+     */
+    public RestRequestInfo getRequestSettings(String requestName) {
         return settings.getRest().get(requestName);
     }
 
+    /**
+     * Конфигурация и генерация REST клиента по названию коннекта
+     *
+     * @param requestName название коннекта
+     * @return RestTemplate
+     */
     public RestTemplate takeTemplateFromSettings(String requestName) {
         RestRequestInfo info = settings.getRest().get(requestName);
         Map<String, SSLStoreInfo> sslStores = settings.getSslStores();

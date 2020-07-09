@@ -6,7 +6,6 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.NonNullApi;
 import org.springframework.lang.Nullable;
 
 import java.io.FileNotFoundException;
@@ -14,11 +13,14 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 
+/**
+ * Фабрика для парсинга .yml конфигурации
+ */
 public class YamlProppertySourceFactory implements PropertySourceFactory {
 
     @NonNull
     @Override
-    public PropertySource<?> createPropertySource(@Nullable String name,@NonNull EncodedResource resource) throws IOException {
+    public PropertySource<?> createPropertySource(@Nullable String name, @NonNull EncodedResource resource) throws IOException {
         return new PropertiesPropertySource(
                 name != null ? name : Objects.requireNonNull(resource.getResource().getFilename()),
                 loadYamlIntoProperties(resource)

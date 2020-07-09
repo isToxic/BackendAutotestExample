@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 /**
- * Класс-структура конфигурации ssl для пользователей .yml файла
+ * Структура конфигурации ssl для пользователей .yml файла
  */
 @Data
 @Component

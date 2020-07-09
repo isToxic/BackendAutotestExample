@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.AbstractMessageListenerContainer;
-import org.springframework.kafka.listener.ConsumerSeekAware;
 import org.springframework.kafka.listener.adapter.FilteringMessageListenerAdapter;
 import org.springframework.kafka.listener.adapter.RecordFilterStrategy;
 import org.springframework.lang.NonNull;
@@ -27,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static io.vavr.control.Try.of;
 
 /**
- * Класс для работы с Каfka, реализованы методы отправки/получения сообщений
+ * Сервис для отправки/получения сообщений Каfka
  */
 @Slf4j
 @Service
@@ -42,6 +41,13 @@ public class KafkaService {
         this.recordsRepository = recordsRepository;
     }
 
+    /**
+     * Вычитка сообщения из очереди Kafka с таймаутом = 60 секунд
+     *
+     * @param storageName    ключ хранилища клиентов
+     * @param topic          очередь вычитки
+     * @param filterStrategy стратегия фильтрации необходимого сообщения
+     */
     public void listenDefaultTimeout(
             @NonNull Tuple storageName,
             @NonNull String topic,
@@ -49,6 +55,13 @@ public class KafkaService {
         listen(storageName, topic, filterStrategy, 60000L);
     }
 
+    /**
+     * Вычитка сообщения из очереди Kafka без таймаута (!!! бесконечно до момента нахождения необходимого сообщения !!!)
+     *
+     * @param storageName    ключ хранилища клиентов
+     * @param topic          очередь вычитки
+     * @param filterStrategy стратегия фильтрации необходимого сообщения
+     */
     public void listen(
             @NonNull Tuple storageName,
             @NonNull String topic,
@@ -56,6 +69,15 @@ public class KafkaService {
         listen(storageName, topic, filterStrategy, null);
     }
 
+    /**
+     * Отправка сообщения в очередь Kafka
+     *
+     * @param storageName ключ хранилища клиентов
+     * @param topic       очередь записи
+     * @param key         значение заголовка key
+     * @param data        тело сообщения (value)
+     * @param headers     заголовки сообщения
+     */
     public void send(
             @NonNull Tuple storageName,
             @NonNull String topic,
@@ -66,6 +88,12 @@ public class KafkaService {
         send(template, genRecord(template, topic, key, data, headers));
     }
 
+    /**
+     * Получение заголовков для сообщения Kafka из DataTable
+     *
+     * @param headersTable таблица с заголовками
+     * @return List(Header)
+     */
     public List<Header> getHeadersFromDataTable(DataTable headersTable) {
         return of((CheckedFunction0<ArrayList<Header>>) ArrayList::new)
                 .andThen(headerList ->

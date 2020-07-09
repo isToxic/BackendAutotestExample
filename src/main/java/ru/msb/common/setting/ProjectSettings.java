@@ -13,6 +13,9 @@ import ru.msb.common.models.WebSocketClientInfo;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Конфигурация propperties проекта и их структура
+ */
 @Getter
 @Setter
 @Configuration

@@ -13,10 +13,13 @@ import java.util.Optional;
 
 import static ru.msb.common.Common.*;
 
+/**
+ * Реализация хранилищ, используемых в проекте
+ */
 @Slf4j
 @Repository
 public class TestCache implements ConsumerRecordsRepository, ResponseEntityRepository,
-        StringContentRepository, ByteArrayContentRepository, KafkaStorageRepository {
+        StringRepository, ByteArrayContentRepository, KafkaStorageRepository {
     @Override
     public ConsumerRecord<String, String> getConsumerRecord(Tuple key) {
         return Optional.ofNullable(

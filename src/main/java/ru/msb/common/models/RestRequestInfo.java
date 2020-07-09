@@ -3,6 +3,9 @@ package ru.msb.common.models;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+/**
+ * Структура конфигурации REST .yml файла
+ */
 @Data
 @Component
 public class RestRequestInfo {
