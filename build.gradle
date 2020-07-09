@@ -6,7 +6,7 @@ plugins {
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
-group 'ru.msb'
+group 'ru.toxic'
 version '1.0-SNAPSHOT'
 
 apply from: 'gradle/dependencies.gradle'
@@ -50,7 +50,7 @@ task cucumber() {
             args = [
                     '--plugin', 'pretty',
                     '--plugin', 'io.qameta.allure.cucumber5jvm.AllureCucumber5Jvm',
-                    '--glue', 'ru.msb', 'src\\main\\resources\\features',
+                    '--glue', 'ru.toxic', 'src\\main\\resources\\features',
                     '--strict',
 //                    '--tags', '',
                     '--threads', '8'
