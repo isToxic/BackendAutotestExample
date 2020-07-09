@@ -20,7 +20,7 @@ public class WebSocketTransportSteps implements Ru {
     private TestCache storage;
 
     public WebSocketTransportSteps() {
-        Допустим("отправляю по ws соединению {string} подготовленное сообщение и слушаю канал {int} секунд", (String reqestName, Integer timeout) ->
+        Допустим("отправляю по ws соединению {string} подготовленное сообщение и слушаю канал {int} секунду/секунд/секунды", (String reqestName, Integer timeout) ->
                 webSocketService.sendAndSubscribe(reqestName, storage.getString(generateStringKey(WS_STRING_REQUEST_MESSAGE)).getBytes(), timeout)
         );
     }

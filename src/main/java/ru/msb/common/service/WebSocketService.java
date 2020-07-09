@@ -11,7 +11,6 @@ import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
 import ru.msb.common.models.SSLStoreInfo;
 import ru.msb.common.models.WebSocketClientInfo;
@@ -27,8 +26,6 @@ import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,17 +42,10 @@ public class WebSocketService {
     }
 
     public void sendAndSubscribe(String requestName, byte[] sendingData, long subscriptionTime) {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final String threadName = Thread.currentThread().getName();
-        Flux.merge(
-                Flux.range(0, 1)
-                        .subscribeOn(Schedulers.single())
-                        .map(id -> sendAndSubscribe(requestName, threadName, sendingData, subscriptionTime))
-                        .flatMap(sp -> sp.doOnTerminate(latch::countDown))
-                        .parallel()
-        )
-                .subscribe();
-        Try.of(() -> latch.await((subscriptionTime + 1), TimeUnit.SECONDS)).get();
+        Try.of(() ->
+                Flux.from(sendAndSubscribe(requestName, Thread.currentThread().getName(), sendingData, subscriptionTime)).subscribe())
+                .andThen(() -> Try.run(() -> Thread.sleep(subscriptionTime * 1000L + 100L)).get())
+                .get();
     }
 
     private Mono<Void> sendAndSubscribe(String requestName, String threadName, byte[] data, long subscriptionTime) {
@@ -79,7 +69,7 @@ public class WebSocketService {
                                         .take(Duration.ofSeconds(subscriptionTime))
                                         .map(WebSocketMessage::retain)
                                         .doOnNext(dataBuffer -> {
-                                            log.info("Получено сообщение: \n{}\nв потоке: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()), threadName);
+                                            log.info("Получено сообщение: \n{}\nв сессии: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()), String.format("%s:%s",threadName, session.getId()));
                                             byte[] bytes = new byte[dataBuffer.getPayload().readableByteCount()];
                                             dataBuffer.getPayload().read(bytes);
                                             DataBufferUtils.release(dataBuffer.getPayload());
