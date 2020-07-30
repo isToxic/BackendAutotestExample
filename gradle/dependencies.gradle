@@ -1,4 +1,3 @@
-def springVer = '5.2.7.RELEASE'
 def springBootVer = '2.3.0.RELEASE'
 def springKafkaVer = '2.5.1.RELEASE'
 def lombokVer = '1.18.8'
@@ -16,7 +15,6 @@ ext {
             springKafka               : "org.springframework.kafka:spring-kafka:$springKafkaVer",
             web_starter               : "org.springframework.boot:spring-boot-starter-web:$springBootVer",
             springBootTest         : "org.springframework.boot:spring-boot-starter-test:$springBootVer",
-            springTest                : "org.springframework:spring-test:$springVer",
             lombok                      : "org.projectlombok:lombok:$lombokVer",
             bootSocket               : "org.springframework.boot:spring-boot-starter-webflux:$springBootVer",
             jackson_annotations: "com.fasterxml.jackson.core:jackson-annotations:$jacksonVer",
@@ -45,6 +43,6 @@ ext {
     libs.cucumber = [libs.cucumber_java8, libs.cucumber_spring, libs.cucumber_junit, libs.allure]
     libs.common = [libs.vavr, libs.javax, libs.httpClient, libs.commons_lang3]
     libs.jackson = [libs.jackson_annotations, libs.jackson_databind, libs.jackson_Schema, libs.json_schema_valid, libs.jsonGenerator]
-    libs.tests = [libs.junit, libs.springBootTest, libs.springTest]
+    libs.tests = [libs.junit, libs.springBootTest]
     libs.logging = [libs.slf4jApi, libs.logbackClassic, libs.jclOverSlf4j, libs.julToSlf4j]
 }
