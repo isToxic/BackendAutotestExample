@@ -16,8 +16,6 @@ ext {
             springKafka               : "org.springframework.kafka:spring-kafka:$springKafkaVer",
             web_starter               : "org.springframework.boot:spring-boot-starter-web:$springBootVer",
             springBootTest         : "org.springframework.boot:spring-boot-starter-test:$springBootVer",
-            springCore                : "org.springframework:spring-core:$springVer",
-            springContext           : "org.springframework:spring-context:$springVer",
             springTest                : "org.springframework:spring-test:$springVer",
             lombok                      : "org.projectlombok:lombok:$lombokVer",
             bootSocket               : "org.springframework.boot:spring-boot-starter-webflux:$springBootVer",
