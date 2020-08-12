@@ -2,6 +2,7 @@ package ru.toxic.common.service;
 
 import io.netty.handler.ssl.SslContextBuilder;
 import io.vavr.control.Try;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -33,16 +34,11 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WebSocketService {
 
     private final ByteArrayContentRepository byteArrayContentRepository;
     private final ProjectSettings settings;
-
-    @Autowired
-    public WebSocketService(ByteArrayContentRepository byteArrayContentRepository, ProjectSettings settings) {
-        this.byteArrayContentRepository = byteArrayContentRepository;
-        this.settings = settings;
-    }
 
     /**
      * Отправление и слушание ответа WS

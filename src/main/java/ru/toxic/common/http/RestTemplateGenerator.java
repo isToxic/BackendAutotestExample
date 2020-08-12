@@ -1,6 +1,7 @@
 package ru.toxic.common.http;
 
 import io.vavr.control.Try;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.config.RegistryBuilder;
@@ -35,14 +36,10 @@ import java.util.Map;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class RestTemplateGenerator {
 
     private final ProjectSettings settings;
-
-    @Autowired
-    public RestTemplateGenerator(ProjectSettings settings) {
-        this.settings = settings;
-    }
 
     /**
      * Получение настроек коннекта

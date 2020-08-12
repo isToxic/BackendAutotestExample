@@ -9,7 +9,6 @@ import ru.toxic.common.service.WebSocketService;
 import static ru.toxic.common.Common.WS_STRING_REQUEST_MESSAGE;
 import static ru.toxic.common.Common.generateStringKey;
 
-
 @Slf4j
 public class WebSocketTransportSteps implements Ru {
 

@@ -4,6 +4,7 @@ import io.cucumber.datatable.DataTable;
 import io.vavr.CheckedFunction0;
 import io.vavr.Tuple;
 import io.vavr.control.Try;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
@@ -30,16 +31,11 @@ import static io.vavr.control.Try.of;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class KafkaService {
 
     private final KafkaStorageRepository storageRepository;
     private final ConsumerRecordsRepository recordsRepository;
-
-    @Autowired
-    public KafkaService(KafkaStorageRepository storageRepository, ConsumerRecordsRepository recordsRepository) {
-        this.storageRepository = storageRepository;
-        this.recordsRepository = recordsRepository;
-    }
 
     /**
      * Вычитка сообщения из очереди Kafka с таймаутом = 60 секунд

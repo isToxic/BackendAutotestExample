@@ -1,5 +1,6 @@
 package ru.toxic.common.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
@@ -17,16 +18,11 @@ import static ru.toxic.common.Common.genURI;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class HttpRestService {
 
     private final RestTemplateGenerator clientGenerator;
     private final ResponseEntityRepository repository;
-
-    @Autowired
-    public HttpRestService(RestTemplateGenerator clientGenerator, ResponseEntityRepository repository) {
-        this.clientGenerator = clientGenerator;
-        this.repository = repository;
-    }
 
     /**
      * Выполнение REST запроса методом PATCH

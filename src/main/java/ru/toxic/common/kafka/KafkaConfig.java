@@ -1,5 +1,6 @@
 package ru.toxic.common.kafka;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -32,16 +33,11 @@ import static org.apache.kafka.common.config.SslConfigs.*;
 @Slf4j
 @EnableKafka
 @Configuration
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class KafkaConfig {
 
     private final ProjectSettings prop;
     private final KafkaStorageRepository repository;
-
-    @Autowired
-    public KafkaConfig(ProjectSettings prop, KafkaStorageRepository repository) {
-        this.prop = prop;
-        this.repository = repository;
-    }
 
     /**
      * Генерация клиентов для вычитки/записи сообщений в Kafka и сохранение в репозитории
