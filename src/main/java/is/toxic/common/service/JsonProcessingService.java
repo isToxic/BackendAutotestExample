@@ -68,7 +68,7 @@ public class JsonProcessingService {
      */
     public JsonNode readSchema(String fileName) {
         return Try.of(() -> MAPPER.readTree(
-                Try.of(() -> new FileReader(format("src\\main\\resources\\jsonSchems\\%s", fileName))
+                Try.of(() -> new FileReader(format("src/main/resources/jsonSchems/%s", fileName))
                 ).get())
         ).get();
     }
