@@ -12,6 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 @Profile("second")
 @EnableConfigurationProperties
 @ComponentScan(basePackages = "ru.toxic")
-@PropertySource(value = "file:config\\secondStandConfig.yml", factory = YamlProppertySourceFactory.class)
+@PropertySource(value = "file:config/secondStandConfig.yml", factory = YamlProppertySourceFactory.class)
 public class ConfigSecondStand {
 }
