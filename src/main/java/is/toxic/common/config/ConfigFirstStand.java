@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Profile("first")
 @EnableConfigurationProperties
-@ComponentScan(basePackages = "ru.toxic")
+@ComponentScan(basePackages = "is.toxic")
 @PropertySource(value = "file:config/firstStandConfig.yml", factory = YamlProppertySourceFactory.class)
 public class ConfigFirstStand {
 }
