@@ -50,7 +50,7 @@ task cucumber() {
             args = [
                     '--plugin', 'pretty',
                     '--plugin', 'io.qameta.allure.cucumber5jvm.AllureCucumber5Jvm',
-                    '--glue', 'is.toxic', 'src\\main\\resources\\features',
+                    '--glue', 'is.toxic', 'src/main/resources/features',
                     '--strict',
 //                    '--tags', '',
                     '--threads', '8'
@@ -63,7 +63,7 @@ allure {
     autoconfigure = true
     aspectjweaver = true
     version = '2.13.3'
-    resultsDir = file(project.projectDir.toString() +'\\allure-results')
+    resultsDir = file(project.projectDir.toString() +'/allure-results')
     useCucumberJVM {
         version = '2.13.3'
     }
