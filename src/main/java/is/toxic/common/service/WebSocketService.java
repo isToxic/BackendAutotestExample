@@ -2,6 +2,9 @@ package is.toxic.common.service;
 
 import io.netty.handler.ssl.SslContextBuilder;
 import io.vavr.control.Try;
+import is.toxic.common.models.SSLStoreInfo;
+import is.toxic.common.models.WebSocketClientInfo;
+import is.toxic.common.repository.ByteArrayContentRepository;
 import is.toxic.common.setting.ProjectSettings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
-import is.toxic.common.models.SSLStoreInfo;
-import is.toxic.common.models.WebSocketClientInfo;
-import is.toxic.common.repository.ByteArrayContentRepository;
 
 import java.io.FileInputStream;
 import java.net.URI;
@@ -49,7 +48,7 @@ public class WebSocketService {
      */
     public void sendAndSubscribe(String requestName, byte[] sendingData, long subscriptionTime) {
         Try.of(() ->
-                Flux.from(sendAndSubscribe(requestName, Thread.currentThread().getName(), sendingData, subscriptionTime)).subscribe())
+                sendAndSubscribe(requestName, Thread.currentThread().getName(), sendingData, subscriptionTime).subscribe())
                 .andThen(() -> Try.run(() -> Thread.sleep(subscriptionTime * 1000L + 100L)).get())
                 .get();
     }
@@ -75,7 +74,8 @@ public class WebSocketService {
                                         .take(Duration.ofSeconds(subscriptionTime))
                                         .map(WebSocketMessage::retain)
                                         .doOnNext(dataBuffer -> {
-                                            log.info("Получено сообщение: \n{}\nв сессии: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()), String.format("%s:%s", threadName, session.getId()));
+                                            log.info("Получено сообщение: \n{}\nв сессии: {}", dataBuffer.getPayload().toString(Charset.defaultCharset()),
+                                                    String.format("%s:%s", threadName, session.getId()));
                                             byte[] bytes = new byte[dataBuffer.getPayload().readableByteCount()];
                                             dataBuffer.getPayload().read(bytes);
                                             DataBufferUtils.release(dataBuffer.getPayload());
